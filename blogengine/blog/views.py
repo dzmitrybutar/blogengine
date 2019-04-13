@@ -4,7 +4,7 @@ from django.http import HttpResponse
 
 from .models import Post, Tag
 from .utils import ObjectDetailMixin
-from .forms import TagForm
+from .forms import TagForm, PostForm
 
 def posts_list(request):
     posts = Post.objects.all()
@@ -13,6 +13,18 @@ def posts_list(request):
 class PostDetail(ObjectDetailMixin, View):
     model = Post
     template = 'blog/post_detail.html'
+
+class PostCreate(View):
+    def get(self, request):
+        form = PostForm()
+        return render(request, 'blog/post_create_form.html', context={'form': form})
+
+    def post(self, request):
+        bound_form = PostForm(request.POST)
+        if bound_form.is_valid():
+            new_post = bound_form.save()
+            return redirect(new_post)
+        return render(request, 'blog/post_create_form.html', context={'form': bound_form})
 
 def tags_list(request):
     tags = Tag.objects.all()
