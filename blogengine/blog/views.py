@@ -3,7 +3,7 @@ from django.views.generic import View
 from django.http import HttpResponse
 
 from .models import Post, Tag
-from .utils import ObjectDetailMixin, ObjectCreateMixin
+from .utils import ObjectDetailMixin, ObjectCreateMixin, ObjectUpdateMixin
 from .forms import TagForm, PostForm
 
 def posts_list(request):
@@ -18,6 +18,11 @@ class PostCreate(ObjectCreateMixin, View):
     model_form = PostForm
     template = 'blog/post_create_form.html'
 
+class PostUpdate(ObjectUpdateMixin, View):
+    model_form = PostForm
+    template = 'blog/post_update_form.html'
+    model = Post
+
 def tags_list(request):
     tags = Tag.objects.all()
     return render(request, 'blog/tags_list.html', context={'tags': tags})
@@ -29,3 +34,8 @@ class TagDetail(ObjectDetailMixin, View):
 class TagCreate(ObjectCreateMixin, View):
     model_form = TagForm
     template = 'blog/tag_create.html'
+
+class TagUpdate(ObjectUpdateMixin, View):
+    model_form = TagForm
+    template = 'blog/tag_update_form.html'
+    model = Tag
