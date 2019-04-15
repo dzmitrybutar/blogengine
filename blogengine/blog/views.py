@@ -1,9 +1,10 @@
 from django.shortcuts import render, get_object_or_404, redirect
 from django.views.generic import View
+from django.urls import reverse
 from django.http import HttpResponse
 
 from .models import Post, Tag
-from .utils import ObjectDetailMixin, ObjectCreateMixin, ObjectUpdateMixin
+from .utils import ObjectDetailMixin, ObjectCreateMixin, ObjectUpdateMixin, ObjectDeleteMixin
 from .forms import TagForm, PostForm
 
 def posts_list(request):
@@ -23,6 +24,11 @@ class PostUpdate(ObjectUpdateMixin, View):
     template = 'blog/post_update_form.html'
     model = Post
 
+class PostDelete(ObjectDeleteMixin, View):
+    model = Post
+    template = 'blog/post_delete_form.html'
+    redirect_url = 'posts_list_url'
+
 def tags_list(request):
     tags = Tag.objects.all()
     return render(request, 'blog/tags_list.html', context={'tags': tags})
@@ -39,3 +45,8 @@ class TagUpdate(ObjectUpdateMixin, View):
     model_form = TagForm
     template = 'blog/tag_update_form.html'
     model = Tag
+
+class TagDelete(ObjectDeleteMixin, View):
+    model = Tag
+    template = 'blog/tag_delete_form.html'
+    redirect_url = 'tags_list_url'
